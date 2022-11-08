@@ -1,6 +1,14 @@
 # See the OWNERS docs at https://go.k8s.io/owners
 
 approvers:
-  # TODO: in your repo created from this template, you should replace the
-  # github-admin-team with a list of project owners, see the doc linked above.
-  - github-admin-team
+  - ameukam #SIG K8S Infra Chair
+  - bentheelder #SIG Testing Chair
+  - dims #SIG K8S Infra Chair
+  - spiffxp #SIG K8S Infra TL
+  - thockin #SIG K8S Infra TL
+  - justinsb
+
+reviewers:
+  - justinsb
+  - bentheelder
+  - ameukam
