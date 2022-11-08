@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# script for the "verify" presubmit
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+# cd to the repo root
+REPO_ROOT=$(git rev-parse --show-toplevel)
+cd "${REPO_ROOT}"
+
+dev/format
+
+dev/helpers/error-if-changes.sh

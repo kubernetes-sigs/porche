@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# script for the "lint" presubmit
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+# cd to the repo root
+REPO_ROOT=$(git rev-parse --show-toplevel)
+cd "${REPO_ROOT}"
+
+# Install shellcheck into bin
+mkdir -p "${REPO_ROOT}/bin"
+dev/helpers/ci-install-shellcheck.sh
+export PATH="${REPO_ROOT}/bin:${PATH}"
+
+dev/lint
