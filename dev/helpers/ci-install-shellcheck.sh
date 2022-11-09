@@ -23,6 +23,12 @@ set -o pipefail
 REPO_ROOT=$(git rev-parse --show-toplevel)
 cd "${REPO_ROOT}"
 
+# use sudo if we're not root
+SUDO="sudo"
+if [[ $(whoami) == "root" ]]; then
+  SUDO=""
+fi
+
 # get version from shellcheck script
 scversion="v$(sed -nr 's/SHELLCHECK_VERSION="(.*)"/\1/p' dev/lint-shell)"
 echo "Installing shellcheck ${scversion} from upstream to ensure CI version ..."
@@ -30,15 +36,15 @@ echo ""
 
 # install xz so we can untar the upstream release
 export DEBIAN_FRONTEND=noninteractive
-sudo apt-get -qq update
-DEBCONF_NOWARNINGS="yes" sudo apt-get -qq install --no-install-recommends xz-utils >/dev/null
+${SUDO} apt-get -qq update
+DEBCONF_NOWARNINGS="yes" ${SUDO} apt-get -qq install --no-install-recommends xz-utils >/dev/null
 
 # download and untar shellcheck into /usr/bin
 wget -qO- "https://github.com/koalaman/shellcheck/releases/download/${scversion?}/shellcheck-${scversion?}.linux.x86_64.tar.xz" \
   | tar -C "${REPO_ROOT}/bin" --strip-components=1 -xJ -f - "shellcheck-${scversion}/shellcheck"
 
 # debug installed version
-shellcheck --version
+"${REPO_ROOT}/bin/shellcheck" --version
 
 echo ""
 echo "Done installing shellcheck ..."
