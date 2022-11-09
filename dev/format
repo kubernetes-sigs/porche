@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# CI script to run all the format commands
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+# cd to the repo root
+REPO_ROOT=$(git rev-parse --show-toplevel)
+cd "${REPO_ROOT}"
+
+dev/format-go
+dev/format-headers

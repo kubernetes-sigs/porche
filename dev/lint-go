@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# CI script to run golang-ci-lint
+set -o errexit
+set -o nounset
+set -o pipefail
+
+# cd to the repo root
+REPO_ROOT=$(git rev-parse --show-toplevel)
+cd "${REPO_ROOT}"
+
+go run github.com/golangci/golangci-lint/cmd/golangci-lint@latest --config .golangci.yml run ./...

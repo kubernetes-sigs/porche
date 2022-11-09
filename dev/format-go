@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# CI script to run gofmt & go mod tidy
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+# cd to the repo root
+REPO_ROOT=$(git rev-parse --show-toplevel)
+cd "${REPO_ROOT}"
+
+find . -name '*.go' -type f -print0 | xargs -0 gofmt -s -w
+
+go mod tidy
