@@ -43,7 +43,7 @@ func main() {
 
 	cfg := app.MirrorConfig{
 		CanonicalFallback: getEnv("FALLBACK_LOCATION", "https://artifacts.k8s.io/"),
-		InfoURL:           "https://github.com/kubernetes/registry.k8s.io",
+		InfoURL:           "https://github.com/kubernetes-sigs/porche",
 		PrivacyURL:        "https://www.linuxfoundation.org/privacy-policy/",
 	}
 
