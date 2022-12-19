@@ -9,4 +9,5 @@ set -o pipefail
 REPO_ROOT=$(git rev-parse --show-toplevel)
 cd "${REPO_ROOT}"
 
-go test -v ./...
+set -x
+CGO_ENABLED=0 go test -v ./...

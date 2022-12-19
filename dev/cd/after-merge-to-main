@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# Script run by CI (cloudbuild/prow) after merges to main branch
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+# cd to the repo root (and save it in REPO_ROOT)
+REPO_ROOT=$(git rev-parse --show-toplevel)
+cd "${REPO_ROOT}"
+
+# Install golang 1.19.3
+mkdir -p /tmp
+cd /tmp
+curl -L https://go.dev/dl/go1.19.3.linux-amd64.tar.gz -o go.tar.gz
+
+sha256sum --check - <<EOF
+74b9640724fd4e6bb0ed2a1bc44ae813a03f1e72a4c76253e2d5c015494430ba  go.tar.gz
+EOF
+
+rm -rf /usr/local/go && tar -C /usr/local -xzf go.tar.gz
+
+export PATH=$PATH:/usr/local/go/bin
+
+cd "${REPO_ROOT}"
+go version
+
+# Push images
+cd "${REPO_ROOT}"
+dev/test # Quick check to make sure everything is OK
+PUSH=true dev/build
+
+# Deploy images to CloudRun staging
+dev/helpers/deploy-to-cloudrun-staging.sh
