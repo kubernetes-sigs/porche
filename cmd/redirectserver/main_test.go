@@ -79,6 +79,7 @@ func TestIntegrationMain(t *testing.T) {
 
 	// TODO: fake being on AWS
 	testGet := func(ctx context.Context, relativePath string, wantStatusCode int, wantContent string) {
+		t.Helper()
 		url := "http://" + testAddr + "/" + relativePath
 		// Do not follow redirects
 		httpClient := &http.Client{
