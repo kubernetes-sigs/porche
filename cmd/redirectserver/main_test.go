@@ -123,7 +123,7 @@ func TestIntegrationMain(t *testing.T) {
 	testGet(ctx, "privacy", http.StatusTemporaryRedirect, "<a href=\"https://www.linuxfoundation.org/privacy-policy/\">Temporary Redirect</a>.\n\n")
 
 	// test fetching root, should be served via redirect
-	testGet(ctx, "", http.StatusTemporaryRedirect, "<a href=\"https://github.com/kubernetes/registry.k8s.io\">Temporary Redirect</a>.\n\n")
+	testGet(ctx, "", http.StatusTemporaryRedirect, "<a href=\"https://github.com/kubernetes-sigs/porche\">Temporary Redirect</a>.\n\n")
 
 	// we're done, cleanup
 	if err := serverCmd.Process.Signal(os.Interrupt); err != nil {
