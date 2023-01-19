@@ -4,5 +4,5 @@ github.com/google/go-cmp v0.5.9 h1:O2Tfq5qg4qc4AmwVlvv0oLiVAGB7enBSJ2x2DqQFi38=
 github.com/google/go-cmp v0.5.9/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
 k8s.io/klog/v2 v2.80.1 h1:atnLQ121W371wYYFawwYx1aEY2eUfs4l3J72wtgAwV4=
 k8s.io/klog/v2 v2.80.1/go.mod h1:y1WjHnz7Dj687irZUWR/WLkLc5N1YHtjLdmgWjndZn0=
-k8s.io/registry.k8s.io v0.0.5-0.20221108001816-a1a9507fec8b h1:tBK8jd3UTtXDFwH8SWlUySUvoQpR170r9SfIIcFXpEs=
-k8s.io/registry.k8s.io v0.0.5-0.20221108001816-a1a9507fec8b/go.mod h1:lrcyXQFz3OaV/2u1Wsj398d+t8d9ZMeilLjcmgnt/sQ=
+k8s.io/registry.k8s.io v0.0.5-0.20230118195034-42e47893a27b h1:Qb4o3Nva5rKncHfFPmth14H10QWJofYW9a+wTU6kw0I=
+k8s.io/registry.k8s.io v0.0.5-0.20230118195034-42e47893a27b/go.mod h1:lrcyXQFz3OaV/2u1Wsj398d+t8d9ZMeilLjcmgnt/sQ=
