@@ -104,17 +104,24 @@ func (s *Server) serveBinaries(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// check if blob is available in our S3 bucket for the region
-	mirrorBase := awsRegionToS3URL(awsRegion)
+	mirrorBase, found := awsRegionToS3URL(awsRegion)
+	if !found {
+		// fall back to redirect to upstream
+		klog.InfoS("mirror not found for region; redirecting request to fallback location", "region", awsRegion)
+		s.redirectToCanonical(w, r)
+		return
+	}
+
 	mirrorURL := urlJoin(mirrorBase, rPath)
 	if s.mirrorCache.BlobExists(mirrorURL, mirrorBase, rPath) {
 		// blob known to be available in S3, redirect client there
-		klog.V(2).InfoS("redirecting blob request to mirror", "path", rPath, "mirror", mirrorBase)
+		klog.V(2).InfoS("redirecting request to mirror", "path", rPath, "mirror", mirrorBase)
 		http.Redirect(w, r, mirrorURL, http.StatusTemporaryRedirect)
 		return
 	}
 
 	// fall back to redirect to upstream
-	klog.V(2).InfoS("blob not found; redirecting blob request to fallback location", "path", rPath)
+	klog.V(2).InfoS("blob not found; redirecting request to fallback location", "path", rPath)
 	s.redirectToCanonical(w, r)
 }
 
