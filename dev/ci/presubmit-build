@@ -10,4 +10,7 @@ set -o pipefail
 REPO_ROOT=$(git rev-parse --show-toplevel)
 cd "${REPO_ROOT}"
 
+# Install preferred golang version into PATH
+. dev/helpers/ci-install-golang.sh
+
 dev/build
