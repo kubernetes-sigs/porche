@@ -15,4 +15,7 @@ mkdir -p "${REPO_ROOT}/bin"
 dev/helpers/ci-install-shellcheck.sh
 export PATH="${REPO_ROOT}/bin:${PATH}"
 
+# Install preferred golang version into PATH
+. dev/helpers/ci-install-golang.sh
+
 dev/lint
