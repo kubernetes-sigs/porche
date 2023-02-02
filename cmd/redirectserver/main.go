@@ -42,7 +42,7 @@ func main() {
 	port := getEnv("PORT", "8080")
 
 	cfg := app.MirrorConfig{
-		CanonicalFallback: getEnv("FALLBACK_LOCATION", "https://artifacts.k8s.io/"),
+		CanonicalFallback: getEnv("FALLBACK_LOCATION", "https://storage.googleapis.com/k8s-artifacts-prod/"),
 		InfoURL:           "https://github.com/kubernetes-sigs/porche",
 		PrivacyURL:        "https://www.linuxfoundation.org/privacy-policy/",
 	}

@@ -115,10 +115,10 @@ func TestIntegrationMain(t *testing.T) {
 	}
 
 	// test fetching non-hash, should be served via redirect
-	testGet(ctx, "binaries/kops/1.24.3/darwin/arm64/kops", http.StatusTemporaryRedirect, "<a href=\"https://artifacts.k8s.io/binaries/kops/1.24.3/darwin/arm64/kops\">Temporary Redirect</a>.\n\n")
+	testGet(ctx, "binaries/kops/1.24.3/darwin/arm64/kops", http.StatusTemporaryRedirect, "<a href=\"https://storage.googleapis.com/k8s-artifacts-prod/binaries/kops/1.24.3/darwin/arm64/kops\">Temporary Redirect</a>.\n\n")
 
 	// test fetching non-existent, should be served via redirect
-	testGet(ctx, "binaries/not-a-file", http.StatusTemporaryRedirect, "<a href=\"https://artifacts.k8s.io/binaries/not-a-file\">Temporary Redirect</a>.\n\n")
+	testGet(ctx, "binaries/not-a-file", http.StatusTemporaryRedirect, "<a href=\"https://storage.googleapis.com/k8s-artifacts-prod/binaries/not-a-file\">Temporary Redirect</a>.\n\n")
 
 	// test fetching privacy, should be served via redirect
 	testGet(ctx, "privacy", http.StatusTemporaryRedirect, "<a href=\"https://www.linuxfoundation.org/privacy-policy/\">Temporary Redirect</a>.\n\n")
