@@ -27,6 +27,7 @@ import (
 	"k8s.io/registry.k8s.io/pkg/net/cidrs/aws"
 
 	"sigs.k8s.io/porche/cmd/redirectserver/pkg/blobcache"
+	"sigs.k8s.io/porche/cmd/redirectserver/pkg/features"
 )
 
 type MirrorConfig struct {
@@ -96,10 +97,12 @@ func (s *Server) serveBinaries(w http.ResponseWriter, r *http.Request) {
 
 	awsRegion := ""
 
-	// Allow region to be specified in a parameter, primarily for testing,
-	// but this might also be useful for clients that want to "guide" the mirror.
-	if s := r.URL.Query().Get("region"); strings.HasPrefix(s, "aws-") {
-		awsRegion = strings.TrimPrefix(s, "aws-")
+	if features.AllowRegionToBeSpecified.IsEnabled() {
+		// Allow region to be specified in a parameter, primarily for testing,
+		// but this might also be useful for clients that want to "guide" the mirror.
+		if s := r.URL.Query().Get("region"); strings.HasPrefix(s, "aws-") {
+			awsRegion = strings.TrimPrefix(s, "aws-")
+		}
 	}
 
 	if awsRegion == "" {
