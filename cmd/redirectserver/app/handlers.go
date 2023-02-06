@@ -27,6 +27,7 @@ import (
 	"k8s.io/registry.k8s.io/pkg/net/cidrs/aws"
 
 	"sigs.k8s.io/porche/cmd/redirectserver/pkg/blobcache"
+	"sigs.k8s.io/porche/cmd/redirectserver/pkg/features"
 )
 
 type MirrorConfig struct {
@@ -94,34 +95,46 @@ func (s *Server) serveBinaries(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// check if client is known to be coming from an AWS region
-	awsRegion, ipIsKnown := s.regionMapper.GetIP(clientIP)
-	if !ipIsKnown {
-		// no region match, redirect to fallback location
-		klog.V(2).InfoS("region not known; redirecting request to fallback location", "path", rPath)
-		s.redirectToCanonical(w, r)
-		return
+	awsRegion := ""
+
+	if features.AllowRegionToBeSpecified.IsEnabled() {
+		// Allow region to be specified in a parameter, primarily for testing,
+		// but this might also be useful for clients that want to "guide" the mirror.
+		if s := r.URL.Query().Get("region"); strings.HasPrefix(s, "aws-") {
+			awsRegion = strings.TrimPrefix(s, "aws-")
+		}
 	}
 
-	// check if blob is available in our S3 bucket for the region
-	mirrorBase, found := awsRegionToS3URL(awsRegion)
-	if !found {
-		// fall back to redirect to upstream
-		klog.InfoS("mirror not found for region; redirecting request to fallback location", "region", awsRegion)
-		s.redirectToCanonical(w, r)
-		return
+	if awsRegion == "" {
+		// check if client is known to be coming from an AWS region
+		region, ipIsKnown := s.regionMapper.GetIP(clientIP)
+		if !ipIsKnown {
+			// no region match, redirect to fallback location
+			klog.V(2).InfoS("region cannot be determined from IP; redirecting request to fallback location", "path", rPath)
+		} else {
+			awsRegion = region
+		}
 	}
 
-	mirrorURL := urlJoin(mirrorBase, rPath)
-	if s.mirrorCache.BlobExists(mirrorURL, mirrorBase, rPath) {
-		// blob known to be available in S3, redirect client there
-		klog.V(2).InfoS("redirecting request to mirror", "path", rPath, "mirror", mirrorBase)
-		http.Redirect(w, r, mirrorURL, http.StatusTemporaryRedirect)
-		return
+	if awsRegion != "" {
+		// check if we have a mirror in the region
+		mirrorBase, found := awsRegionToS3URL(awsRegion)
+		if !found {
+			klog.InfoS("mirror not found for region; redirecting request to fallback location", "region", awsRegion)
+		} else {
+			// check if blob is available in our S3 bucket for the region
+			mirrorURL := urlJoin(mirrorBase, rPath)
+			if s.mirrorCache.BlobExists(mirrorURL, mirrorBase, rPath) {
+				// blob known to be available in S3, redirect client there
+				klog.V(2).InfoS("redirecting request to mirror", "path", rPath, "mirror", mirrorBase)
+				http.Redirect(w, r, mirrorURL, http.StatusTemporaryRedirect)
+				return
+			}
+			// fall back to redirect to upstream
+			klog.V(2).InfoS("file not found in mirror; redirecting request to fallback location", "path", rPath, "mirror", mirrorBase)
+		}
 	}
 
-	// fall back to redirect to upstream
-	klog.V(2).InfoS("blob not found; redirecting request to fallback location", "path", rPath)
 	s.redirectToCanonical(w, r)
 }
 
