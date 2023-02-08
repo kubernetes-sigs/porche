@@ -46,7 +46,9 @@ for image in "${images[@]}"; do
     publish_args=()
     if [[ "${PUSH}" != 'false' ]]; then
         publish_args+=(--push=true)
-        publish_args+=(--platform="linux/amd64,linux/arm64")
+        # When we build a multiarch image with arm64, CloudRun fails to find the image in some regions
+        # Only build for amd64 for the moment (CloudRun is amd64-only anyway)
+        publish_args+=(--platform="linux/amd64")
     else
         publish_args+=(--push=false)
         publish_args+=(--tarball=bin/"${name}".tar)

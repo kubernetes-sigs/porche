@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Script run by CI (cloudbuild/prow) after merges to main branch
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+# cd to the repo root (and save it in REPO_ROOT)
+REPO_ROOT=$(git rev-parse --show-toplevel)
+cd "${REPO_ROOT}"
+
+# Install preferred golang version into PATH
+. dev/helpers/ci-install-golang.sh
+
+# Push images
+cd "${REPO_ROOT}"
+dev/test # Quick check to make sure everything is OK
+PUSH=true dev/build
+
+# Deploy images to CloudRun staging
+dev/helpers/deploy-to-cloudrun-staging.sh
