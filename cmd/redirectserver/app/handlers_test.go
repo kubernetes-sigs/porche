@@ -35,7 +35,7 @@ type Harness struct {
 	Config MirrorConfig
 }
 
-func NewHarness(t *testing.T) *Harness {
+func NewHarness() *Harness {
 	cfg := MirrorConfig{
 		CanonicalFallback: "https://artifacts-fallback.k8s.io",
 		InfoURL:           "https://github.com/kubernetes/k8s.io/tree/main/artifacts.k8s.io",
@@ -118,7 +118,7 @@ func (tc *TestRequest) Run(t *testing.T, harness *Harness) {
 }
 
 func TestHTTPRequest(t *testing.T) {
-	h := NewHarness(t)
+	h := NewHarness()
 
 	testCases := []TestRequest{
 		{
@@ -195,7 +195,7 @@ func expectedContentForRedirect(url string) string {
 }
 
 func TestBinaryRedirection(t *testing.T) {
-	h := NewHarness(t)
+	h := NewHarness()
 
 	testCases := []TestRequest{
 		{
